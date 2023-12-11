@@ -1,0 +1,23 @@
+<!-- register.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Register</h2>
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+  </form>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <strong>Error!</strong> {{ form.non_field_errors.0 }}
+    </div>
+  {% endif %}
+
+  {% if form.errors %}
+    <div class="alert alert-danger">
+      <strong>Error!</strong> Please correct the errors below.
+    </div>
+  {% endif %}
+{% endblock %}
