@@ -36,17 +36,13 @@ def registration_success(request):
 #     product = get_object_or_404(Product, pk=product_id)
 
 #     if request.method == 'POST':
-#         # Your logic to handle buying a product goes here
-#         # For example, create an order for the current user and the selected product
 #         order = Order.objects.create(
 #             user=request.user,
 #             total_price=product.price
 #         )
 #         order.products.add(product)
 
-#         # You can customize the logic for calculating the total price and adding multiple products
 
-#         # Redirect to a success page or any other page as needed
 #         return redirect('buy_success')
 
 #     return render(request, 'buy_product.html', {'product': product})
@@ -62,8 +58,6 @@ def buy_success(request):
     return render(request, 'buy_success.html')
 
 def write_review(request, product_id):
-    # Your logic to handle writing a review goes here
     product = get_object_or_404(Product, pk=product_id)
 
-    # Example: Display a simple form to submit a review
     return render(request, 'write_review.html', {'product': product})    

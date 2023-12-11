@@ -1,4 +1,3 @@
-<!-- ecommerce_app/templates/buy_product.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -9,12 +8,9 @@
       <p class="card-text">{{ product.description }}</p>
       <p class="card-text">Category: {{ product.category.name }}</p>
       <p class="card-text">Price: Rs.{{ product.price }}</p>
-      <!-- Add more details or buttons if needed -->
 
-      <!-- Example: Form for buying the product -->
       <form method="post" action="{% url 'buy_product' product.id %}">
         {% csrf_token %}
-        <!-- Add any additional form fields if needed -->
         <button type="submit" class="btn btn-primary">Buy Now</button>
       </form>
     </div>

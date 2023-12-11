@@ -1,4 +1,3 @@
-# ecommerce_app/forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -36,7 +35,6 @@ class RegistrationForm(UserCreationForm):
         password2 = cleaned_data.get('password2')
 
         if password1 and password2 and password1 == password2:
-            # Additional password strength checks can be added here if needed
             pass
         else:
             raise forms.ValidationError("Invalid password.")
