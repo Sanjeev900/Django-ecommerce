@@ -3,4 +3,21 @@
 {% block content %}
   <h2>Write a Review</h2>
   <p>Review for: {{ product.name }}</p>
+
+  {% for review in reviews %}
+    <div>
+      <p>User: {{ review.user.username }}</p>
+      <p>Date: {{ review.created_at }}</p>
+      <p>Rating: {{ review.rating }}</p>
+      <p>Comment: {{ review.comment }}</p>
+      <hr>
+    </div>
+  {% endfor %}
+
+  <h3>Your Review</h3>
+  <form method="post" action="{% url 'write_review' product.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Review</button>
+  </form>
 {% endblock %}

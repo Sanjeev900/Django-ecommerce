@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Order, Category
-from .forms import RegistrationForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.urls import reverse_lazy
+from django.utils import timezone
+
+from rest_framework.authtoken.models import Token
+
+from .models import Product, Review, Category
+from .forms import RegistrationForm, LoginForm, ReviewForm
 
 
 @login_required(login_url='custom_login')
@@ -80,10 +83,10 @@ def detail_product(request, product_id):
 def buy_success(request, product_id):
     return render(request, 'buy_success.html', {'product_id': product_id})
 
-def write_review(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+# def write_review(request, product_id):
+#     product = get_object_or_404(Product, pk=product_id)
 
-    return render(request, 'write_review.html', {'product': product})    
+#     return render(request, 'write_review.html', {'product': product})    
 
 def custom_login(request):
     if request.method == 'POST':
@@ -137,3 +140,39 @@ class CustomPasswordChangeDoneView(PasswordChangeDoneView):
             # If the user is not authenticated, redirect to the login page
             logout(request)
             return redirect(reverse_lazy('custom_login'))
+
+
+@login_required(login_url='custom_login')
+def write_review(request, product_id):
+    product = Product.objects.get(pk=product_id)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            return redirect('review_success')
+    else:
+        form = ReviewForm()
+
+    reviews = Review.objects.filter(product=product)
+
+    # Convert UTC time to IST
+    for review in reviews:
+        review.created_at = review.created_at.astimezone(timezone.get_current_timezone())
+
+    context = {
+        'form': form,
+        'product': product,
+        'reviews': reviews,
+    }
+
+    return render(request, 'write_review.html', context)
+
+
+@login_required(login_url='custom_login')
+def review_success(request):
+    messages.success(request, 'Review submitted successfully!')
+    return redirect('products')
