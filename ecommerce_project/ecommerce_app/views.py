@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Order
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.urls import reverse_lazy
 
 
+@login_required(login_url='custom_login')
 def products(request):
     products = Product.objects.all()
 
@@ -61,3 +66,56 @@ def write_review(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
     return render(request, 'write_review.html', {'product': product})    
+
+def custom_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+
+                # Create or get the token for the user
+                token, created = Token.objects.get_or_create(user=user)
+
+                # You can store the token in the session if needed
+                request.session['auth_token'] = token.key
+
+                return redirect('products')
+            else:
+                form.add_error(None, 'Invalid credentials. Please try again.')
+
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {'form': form})
+
+
+def custom_logout(request):
+    logout(request)
+    return redirect('custom_login')
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'password_change_form.html'
+    success_url = reverse_lazy('password_change_done')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        logout(self.request)
+        return response
+
+class CustomPasswordChangeDoneView(PasswordChangeDoneView):
+    template_name = 'password_change_done.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # If the user is authenticated, redirect to a different URL
+            return super().get(request, *args, **kwargs)
+        else:
+            # If the user is not authenticated, redirect to the login page
+            logout(request)
+            return redirect(reverse_lazy('custom_login'))

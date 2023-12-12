@@ -3,6 +3,7 @@
 {% block content %}
   <h2>Registration Successful</h2>
   <p>Your account has been successfully created.</p>
+
+  <a href="{% url 'custom_login' %}" class="btn btn-primary">Go to login page</a>
   
-  <a href="{% url 'products' %}" class="btn btn-primary">View Products</a>
 {% endblock %}
