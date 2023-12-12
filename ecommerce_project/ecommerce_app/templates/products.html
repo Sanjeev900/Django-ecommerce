@@ -13,7 +13,7 @@
             <p class="card-text">Category: {{ product.category.name }}</p>
             <p class="card-text">Price: Rs.{{ product.price }}</p>
             <div class="d-grid gap-2">
-              <a href="{% url 'buy_product' product.id %}" class="btn btn-success">Buy</a>
+              <a href="{% url 'detail_product' product.id %}" class="btn btn-success">Details</a>
               <a href="{% url 'write_review' product.id %}" class="btn btn-primary">Write a Review</a>
             </div>
           </div>

@@ -53,14 +53,14 @@ def registration_success(request):
 #     return render(request, 'buy_product.html', {'product': product})
 
 
-def buy_product(request, product_id):
+def detail_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
-    return render(request, 'buy_product.html', {'product': product})
+    return render(request, 'detail_product.html', {'product': product})
 
 
-def buy_success(request):
-    return render(request, 'buy_success.html')
+def buy_success(request, product_id):
+    return render(request, 'buy_success.html', {'product_id': product_id})
 
 def write_review(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
