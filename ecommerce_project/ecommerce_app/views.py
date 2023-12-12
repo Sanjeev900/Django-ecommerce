@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Order
+from .models import Product, Order, Category
 from .forms import RegistrationForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -13,7 +13,25 @@ from django.urls import reverse_lazy
 def products(request):
     products = Product.objects.all()
 
-    return render(request, 'products.html', {'products': products})
+    category_id = request.GET.get('category', None)
+    sort_by = request.GET.get('sort_by', 'name')
+
+    if category_id and category_id != '0':
+        products = products.filter(category__id=category_id)
+
+    products = products.order_by(sort_by)
+
+    categories = Category.objects.all()
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'selected_category': int(category_id) if category_id else None,
+        'selected_sort': sort_by,
+    }
+
+    return render(request, 'products.html', context)
+
 
 def product_detail(request, product_id):
     product = Product.objects.get(id=product_id)
