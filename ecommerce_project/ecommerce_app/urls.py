@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import (register, 
+from .views import (home,
+                    register, 
                     registration_success, 
                     products, 
                     detail_product, 
@@ -14,6 +15,7 @@ from .views import (register,
                    )
 
 urlpatterns = [
+    path('', home, name='home'),
     path('register/', register, name='register'),
     path('registration_success/', registration_success, name='registration_success'),
     path('products/', products, name='products'),

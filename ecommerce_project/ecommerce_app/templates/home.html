@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Welcome to My Ecommerce Site</h2>
+  <p>Explore our products and services.</p>
+  <button><a href="{% url 'register' %}">Register</a></button>
+  <button><a href="{% url 'custom_login' %}">Login</a></button>
+{% endblock %}

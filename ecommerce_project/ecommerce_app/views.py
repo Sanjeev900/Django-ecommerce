@@ -12,6 +12,11 @@ from .models import Product, Review, Category
 from .forms import RegistrationForm, LoginForm, ReviewForm
 
 
+
+def home(request):
+    return render(request, 'home.html')
+
+
 @login_required(login_url='custom_login')
 def products(request):
     products = Product.objects.all()
